@@ -50,7 +50,7 @@ storeSchema.pre('save', async function(next) {
     slug: slugRegEx
   });
 
-  if(storesWithSlug) {
+  if(storesWithSlug.length) {
     this.slug = `${this.slug}-${storesWithSlug.length + 1}`;
   }
 
@@ -58,5 +58,12 @@ storeSchema.pre('save', async function(next) {
 
   // TODO make more resilian so slugs are unique
 });
+
+storeSchema.statics.getTagsList = function() {
+  // return this.aggregate([
+  //   { $unwind: '$tags' },
+  //   { cursor: {} }
+  // ]);
+}
 
 module.exports = mongoose.model('Store', storeSchema);
