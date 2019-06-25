@@ -59,11 +59,20 @@ storeSchema.pre('save', async function(next) {
   // TODO make more resilian so slugs are unique
 });
 
-storeSchema.statics.getTagsList = function() {
-  // return this.aggregate([
-  //   { $unwind: '$tags' },
-  //   { cursor: {} }
-  // ]);
+storeSchema.statics.getTagsList = async function() {
+
+  const cursor = await (
+    this.aggregate([
+      { $unwind: '$tags' },
+      { $group: { _id: '$tags', count: { $sum: 1 } }},
+      { $sort: { count: -1 } }
+    ])
+    .cursor({})
+    .exec()
+    .toArray()
+  );
+
+  return cursor;
 }
 
 module.exports = mongoose.model('Store', storeSchema);
