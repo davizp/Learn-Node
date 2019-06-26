@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 exports.loginForm = (req, res) => {
   res.render('login', { title: 'login' });
+<<<<<<< HEAD
 };
 
 exports.registerForm = (req, res) => {
@@ -29,4 +30,6 @@ exports.validateRegister = (req, res, next) => {
     return;
   }
   next();
+=======
+>>>>>>> 94ef5b89a1f32badeec6bec62c5e89046cd166a7
 };
