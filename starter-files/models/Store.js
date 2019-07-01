@@ -41,6 +41,12 @@ const storeSchema = new mongoose.Schema({
   }
 });
 
+// Define our indexes
+storeSchema.index({
+  name: 'text',
+  description: 'text'
+});
+
 storeSchema.pre('save', async function(next) {
   if(!this.isModified('name')) {
     return next();
@@ -78,6 +84,6 @@ storeSchema.statics.getTagsList = async function() {
   );
 
   return cursor;
-}
+};
 
 module.exports = mongoose.model('Store', storeSchema);
