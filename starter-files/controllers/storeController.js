@@ -19,13 +19,13 @@ const multerOptions = {
 
 exports.homePage = (req, res) => {
     res.render('index');
-}
+};
 
 exports.addStore = (req, res) => {
     const context = { title: 'Add Store' };
 
     res.render('editStore', context);
-}
+};
 
 exports.upload = multer(multerOptions).single('photo');
 
@@ -54,7 +54,7 @@ exports.createStore = async (req, res) => {
 
     req.flash('success', `Successfully Created ${store.name}, Care to leave a review?`);
     res.redirect(`/store/${store.slug}`);
-}
+};
 
 exports.getStores = async (req, res) => {
     const stores = await Store.find();
@@ -81,7 +81,7 @@ exports.editStore = async (req, res) => {
     };
 
     res.render('editStore', context);
-}
+};
 
 
 exports.updateStore = async (req, res) => {
@@ -96,7 +96,7 @@ exports.updateStore = async (req, res) => {
     req.flash('success', `Successfully updated <strong>${store.name}</strong>. <a href="/stores/${store.slug}">View Store -></a>`);
 
     res.redirect(`/stores/${store._id}/edit`);
-}
+};
 
 exports.getStoreBySlug = async (req, res, next) => {
 
@@ -109,7 +109,7 @@ exports.getStoreBySlug = async (req, res, next) => {
 
 
     res.render('store', { store, title: store.name });
-}
+};
 
 exports.getStoresByTag = async (req, res, next) => {
 
@@ -128,7 +128,7 @@ exports.getStoresByTag = async (req, res, next) => {
     ]);
 
     res.render('tag', { tags, title: 'Tags', tag, stores });
-}
+};
 
 exports.searchStores =  async (req, res) => {
     const stores = await Store
@@ -141,4 +141,27 @@ exports.searchStores =  async (req, res) => {
         .limit(5);
 
     res.json(stores);
-}
+};
+
+exports.mapStores = async (req, res) => {
+    const { lng = '', lat = '' } = req.query;
+    const coordinates = [lng, lat].map(parseFloat);
+    const query = {
+        location: {
+            $near: {
+                $geometry: {
+                    type: 'Point',
+                    coordinates
+                },
+                $maxDistance: 10000 // 10km
+            }
+        }
+    };
+
+    const stores = await Store
+        .find(query)
+        .select('slug name description location')
+        .limit(10);
+
+    res.json(stores);
+};
