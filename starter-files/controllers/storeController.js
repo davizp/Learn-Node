@@ -170,6 +170,14 @@ exports.mapPage = (req, res) => {
     res.render('map', { title: 'Map' })
 };
 
+exports.getHearts = async (req, res) => {
+    const stores = await Store.find({
+        _id: { $in: req.user.hearts }
+    });
+
+    res.render('stores', { title: 'Hearts', stores });
+};
+
 exports.heartStore = async (req, res) => {
     const hearts = req.user.hearts.map(obj => obj.toString());
     const operator = hearts.includes(req.params.id) ? '$pull' : '$addToSet';
